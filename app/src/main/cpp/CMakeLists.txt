@@ -8,13 +8,17 @@ cmake_minimum_required(VERSION 3.4.1)
 project("VideoCodec")
 
 # 定义根路径
-set(LOCAL_SRC_ROOT_PATH /Users/wangzhiguo/Downloads/Learns/Guo_Company_Svn/GitLab/3TClient/SDK/Client/ClientController/H264EncoderDecoder)
-set(LOCAL_FFMPEG_ROOT_PATH /Users/wangzhiguo/Downloads/Learns/Guo_Company_Svn/GitLab/3TClient/SDK/Client/android/ffmpeg_for_enc)
-set(LOCAL_X264_ROOT_PATH /Users/wangzhiguo/Downloads/Learns/Guo_Company_Svn/GitLab/3TClient/SDK/Client/android/x264)
-set(LOCAL_LIBYUV_ROOT_PATH /Users/wangzhiguo/Downloads/Learns/Guo_Company_Svn/GitLab/3TClient/Lib/libyuv)
+set(ROOT_PATH /Users/wangzhiguo/Downloads/Learns/Guo_Company_Svn/GitLab/3TClient)
+set(LOCAL_SRC_ROOT_PATH ${ROOT_PATH}/SDK/Client/ClientController/H264EncoderDecoder)
+set(LOCAL_FFMPEG_ROOT_PATH ${ROOT_PATH}/SDK/Client/android/ffmpeg_for_enc)
+set(LOCAL_X264_ROOT_PATH ${ROOT_PATH}/SDK/Client/android/x264)
+set(LOCAL_LIBYUV_ROOT_PATH ${ROOT_PATH}/Lib/libyuv)
 
+# 设置普通变量
+# 设置ndk路径
+set(CMAKE_ANDROID_NDK /Users/wangzhiguo/Downloads/Learns/Developer-Tools/ndk-versions/android-ndk-r14b)
 # 设置输出目录
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY /Users/wangzhiguo/Downloads/Learns/MyGithubs/MyCodecProject/app/libs/armeabi-v7a)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY /Users/wangzhiguo/Downloads/Learns/MyGithubs/Android/MyCodecProject/app/libs/armeabi-v7a)
 
 # 为 c++ 编译器设置编译选项，只能设置一次，不能重复设置，后者会覆盖前者
 set(CMAKE_C_FLAGS -D__STDC_CONSTANT_MACROS)
@@ -22,8 +26,6 @@ set(CMAKE_C_FLAGS -D__STDC_CONSTANT_MACROS)
 set(CMAKE_CXX_FLAGS "-Wdeprecated -std=c++11 -frtti -Os -fexceptions -w")
 #-frtti -fexceptions -Os -std=c++11
 message(CMAKE_CXX_FLAGS "CMAKE_CXX_FLAGS ---- ${CMAKE_CXX_FLAGS}")
-# 设置普通变量
-set(CMAKE_ANDROID_NDK /Users/wangzhiguo/Downloads/Learns/Developer-Tools/ndk-versions/android-ndk-r14b)
 
 # 将指定目录中的头文件包含到查找路径中
 include_directories("${LOCAL_SRC_ROOT_PATH}/VideoEncoder")

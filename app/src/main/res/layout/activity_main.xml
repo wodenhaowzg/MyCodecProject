@@ -20,30 +20,44 @@
 			app:layout_constraintRight_toRightOf="parent"
 			app:layout_constraintTop_toTopOf="parent" />
 
-		<LinearLayout
+		<ScrollView
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:orientation="vertical">
-
-			<ImageView
-				android:id="@+id/main_src_image"
+			android:layout_height="wrap_content">
+			<LinearLayout
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content" />
+				android:layout_height="wrap_content"
+				android:orientation="vertical">
 
-			<ImageView
-				android:id="@+id/main_red_image"
-				android:layout_width="wrap_content"
-				android:layout_height="200dp" />
+				<ImageView
+					android:id="@+id/main_src_image"
+					android:layout_width="wrap_content"
+					android:layout_height="200dp" />
 
-			<ImageView
-				android:id="@+id/main_green_image"
-				android:layout_width="wrap_content"
-				android:layout_height="200dp" />
+				<ImageView
+					android:id="@+id/main_red_image"
+					android:layout_width="wrap_content"
+					android:layout_height="200dp" />
 
-			<ImageView
-				android:id="@+id/main_blue_image"
-				android:layout_width="wrap_content"
-				android:layout_height="200dp" />
-		</LinearLayout>
+				<ImageView
+					android:id="@+id/main_green_image"
+					android:layout_width="wrap_content"
+					android:layout_height="200dp" />
+
+				<ImageView
+					android:id="@+id/main_blue_image"
+					android:layout_width="wrap_content"
+					android:layout_height="200dp" />
+
+				<ImageView
+					android:id="@+id/main_nv21_y_image"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content" />
+
+				<ImageView
+					android:id="@+id/main_nv21_vu_image"
+					android:layout_width="wrap_content"
+					android:layout_height="200dp" />
+			</LinearLayout>
+		</ScrollView>
 	</android.support.constraint.ConstraintLayout>
 </layout>

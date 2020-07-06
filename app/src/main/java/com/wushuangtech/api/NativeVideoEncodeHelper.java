@@ -108,28 +108,32 @@ public class NativeVideoEncodeHelper {
 
     private native void setEncoderResolution(long lencoder, int outWidth, int outHeight, int cropLeft, int cropTop, int cropWidth, int cropHeight, int scaleWidth, int scaleHeight, int rotate);
 
+    private native void changeSoftEncParams(long lencoder, int width, int height, int bitrate, int fps, int gop);
+
+    public native boolean videoDataRotateOperator(long lencoder, int format, byte[] data, int width, int height, int pixelWidth, int rotate, boolean flip);
+
     private native byte[] CommonToNV12(long lencoder, byte[] yuvFrame, boolean flip, int format);
 
     private native byte[] CommonToI420(long lencoder, byte[] yuvFrame, boolean flip, int format);
 
-    private native byte[] RGBAToARGB(long lencoder, byte[] yuvFrame, boolean flip);
+    private native byte[] RGBAToARGB(long lencoder, byte[] data, int width, int height, int pixelWidth);
 
-    private native void changeSoftEncParams(long lencoder, int width, int height, int bitrate, int fps, int gop);
+    private native byte[] ARGBToNV21(long lencoder, byte[] data, int width, int height, int pixelWidth);
 
-    public native void ttt_GlReadPixels(long lencoder, int x, int y, int width, int height, int format, int type, int buffer);
-
-    public native byte[] videoDataRotateOperator(long lencoder, int format, byte[] data, int width, int height, int pixelWidth, int rotate);
-
-    public byte[] videoDataRotate(int format, byte[] array, int width, int height, int pixelWidth, int rotate) {
-        return videoDataRotateOperator(mlencoder, format, array, width, height, pixelWidth, rotate);
+    public boolean yuvVideoDataRotate(int format, byte[] array, int width, int height, int rotate, boolean flip) {
+        return videoDataRotateOperator(mlencoder, format, array, width, height, 0, rotate, flip);
     }
 
-    public byte[] rgbaToI420(byte[] data) {
-        return CommonToI420(mlencoder, data, false, TTT_FORMAT_RGBA);
+    public boolean rgbVideoDataRotate(int format, byte[] array, int width, int height, int pixelWidth, int rotate, boolean flip) {
+        return videoDataRotateOperator(mlencoder, format, array, width, height, pixelWidth, rotate, flip);
     }
 
-    public byte[] i420ToRgba(byte[] data) {
-        return CommonToI420(mlencoder, data, false, TTT_FORMAT_I420);
+    public byte[] RGBAToARGB(byte[] srcArray, int width, int height, int pixelWidth) {
+        return RGBAToARGB(mlencoder, srcArray, width, height, pixelWidth);
+    }
+
+    public byte[] ARGBToNV21(byte[] srcArray, int width, int height, int pixelWidth) {
+        return ARGBToNV21(mlencoder, srcArray, width, height, pixelWidth);
     }
 
     //软件编码完成后回调函数
