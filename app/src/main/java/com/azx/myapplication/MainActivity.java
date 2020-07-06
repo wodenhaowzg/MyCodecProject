@@ -2,14 +2,17 @@ package com.azx.myapplication;
 
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.azx.myapplication.databinding.ActivityMainBinding;
 import com.azx.utils.MyBitmapUtils;
+import com.azx.utils.MyFileUtils;
 import com.azx.utils.MyYuvUtils;
 import com.wushuangtech.api.NativeVideoEncodeHelper;
 
+import java.io.File;
 import java.nio.ByteBuffer;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,38 +32,63 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         viewDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         initJni();
-        // 手机的根目录下需要有此路径的文件，才能成功执行
-        Bitmap[] bitmaps = MyBitmapUtils.spliteBitmapColor("1/2.jpg");
-//        Bitmap bitmap1 = testRgbRotate(bitmaps[0]);
+
+        // 手机的根目录下需要有此路径的文件，才能成功执行，默认解析出的bitmap格式为ARGB_8888
+        File externalStorageFile = MyFileUtils.getExternalStorageFile("1/2.jpg");
+        if (externalStorageFile == null) {
+            finish();
+            return;
+        }
+        Bitmap bitmap = BitmapFactory.decodeFile(externalStorageFile.getAbsolutePath());
+        testBitmapSplite(bitmap);
+        testRgbRotate(bitmap, 90, false);
+        testYuvAndSplite(bitmap);
+        testYuvRotate(bitmap, 90, false);
+    }
+
+    /**
+     * 测试bitmap单通道颜色分离。
+     */
+    private void testBitmapSplite(Bitmap bitmap) {
+        Bitmap[] bitmaps = MyBitmapUtils.spliteArgbBitmapColor(bitmap);
         viewDataBinding.mainSrcImage.setImageBitmap(bitmaps[0]);
         viewDataBinding.mainRedImage.setImageBitmap(bitmaps[1]);
         viewDataBinding.mainGreenImage.setImageBitmap(bitmaps[2]);
         viewDataBinding.mainBlueImage.setImageBitmap(bitmaps[3]);
-        // 测试yuv数据分离
-//        Bitmap[] bitmaps2 = testYuvAndSplite(bitmaps[0]);
-//        viewDataBinding.mainNv21YImage.setImageBitmap(bitmaps2[0]);
-//        viewDataBinding.mainNv21VuImage.setImageBitmap(bitmaps2[1]);
-
-        Bitmap bitmap = testYuvRotate(bitmaps[0], 90);
-        viewDataBinding.mainNv21YImage.setImageBitmap(bitmap);
     }
 
-    private Bitmap testRgbRotate(Bitmap bitmap) {
+    /**
+     * 测试argb格式的数据旋转和镜像，数据来源为bitmap
+     */
+    private void testRgbRotate(Bitmap bitmap, int rotate, boolean flip) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
         ByteBuffer buf = ByteBuffer.allocate(bitmap.getByteCount());
         buf.position(0);
         bitmap.copyPixelsToBuffer(buf);
-        boolean rotate = mNativeVideoEncodeHelper.rgbVideoDataRotate(NativeVideoEncodeHelper.TTT_FORMAT_ARGB, buf.array(), bitmap.getWidth(), bitmap.getHeight(), 4, 270, false);
-        if (!rotate) {
-            throw new RuntimeException("videoDataRotate failed!");
+        boolean rotateResult = mNativeVideoEncodeHelper.rgbVideoDataRotate(NativeVideoEncodeHelper.TTT_FORMAT_ARGB,
+                buf.array(), width, height, 4, rotate, flip);
+        if (!rotateResult) {
+            throw new RuntimeException("rgbVideoDataRotate failed!");
         }
-        // 这里需要重置position
+
+        // 这里需要重置position !!! 一个坑
         buf.position(0);
-        Bitmap bitmap1 = Bitmap.createBitmap(bitmap.getHeight(), bitmap.getWidth(), Bitmap.Config.ARGB_8888);
-        bitmap1.copyPixelsFromBuffer(buf);
-        return bitmap1;
+        if (rotate == 90 || rotate == 270) {
+            Bitmap desBitmap = Bitmap.createBitmap(height, width, Bitmap.Config.ARGB_8888);
+            desBitmap.copyPixelsFromBuffer(buf);
+            viewDataBinding.mainRgbRotateFlipImage.setImageBitmap(desBitmap);
+        } else {
+            bitmap.copyPixelsFromBuffer(buf);
+            viewDataBinding.mainRgbRotateFlipImage.setImageBitmap(bitmap);
+        }
+
     }
 
-    private Bitmap[] testYuvAndSplite(Bitmap bitmap) {
+    /**
+     * 测试nv21格式的数据平面分离，数据来源为bitmap
+     */
+    private void testYuvAndSplite(Bitmap bitmap) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         int byteCount = bitmap.getByteCount();
@@ -72,18 +100,22 @@ public class MainActivity extends AppCompatActivity {
             throw new RuntimeException("ARGBToNV21 failed!");
         }
 
-        Bitmap[] bitmaps = new Bitmap[2];
+        // 将 nv21 数据分离为两个平面的数据，y平面和uv平面。
         byte[][] yuvSpliteArray = MyYuvUtils.spliteNV21Array(nv21Array, width, height);
-        byte[] yuvArray = MyYuvUtils.mergeNV21Array(0, yuvSpliteArray[0], width, height);
-        Bitmap temp = MyYuvUtils.nv21ToBitmap(this, yuvArray, width, height);
-        bitmaps[0] = temp;
-        byte[] yuvArray2 = MyYuvUtils.mergeNV21Array(1, yuvSpliteArray[1], width, height);
-        Bitmap temp2 = MyYuvUtils.nv21ToBitmap(this, yuvArray2, width, height);
-        bitmaps[1] = temp2;
-        return bitmaps;
+        // 将 y 平面数据合并为一个完整的 nv21 数据展示出来
+        byte[] yuvArray = MyYuvUtils.mergeNV21Array(true, yuvSpliteArray[0], width, height);
+        Bitmap yBitmap = MyYuvUtils.nv21ToBitmap(this, yuvArray, width, height);
+        // 将 uv 平面数据合并为一个完整的 nv21 数据展示出来
+        byte[] yuvArray2 = MyYuvUtils.mergeNV21Array(false, yuvSpliteArray[1], width, height);
+        Bitmap uvBitmap = MyYuvUtils.nv21ToBitmap(this, yuvArray2, width, height);
+        viewDataBinding.mainNv21YImage.setImageBitmap(yBitmap);
+        viewDataBinding.mainNv21VuImage.setImageBitmap(uvBitmap);
     }
 
-    private Bitmap testYuvRotate(Bitmap bitmap, int rotate) {
+    /**
+     * 测试nv21格式的数据旋转，数据来源为bitmap
+     */
+    private void testYuvRotate(Bitmap bitmap, int rotate, boolean flip) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         int byteCount = bitmap.getByteCount();
@@ -95,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
             throw new RuntimeException("ARGBToNV21 failed!");
         }
 
-        boolean rotateResult = mNativeVideoEncodeHelper.yuvVideoDataRotate(NativeVideoEncodeHelper.TTT_FORMAT_NV21, nv21Array, width, height, rotate, true);
+        boolean rotateResult = mNativeVideoEncodeHelper.yuvVideoDataRotate(NativeVideoEncodeHelper.TTT_FORMAT_NV21, nv21Array, width, height, rotate, flip);
         if (!rotateResult) {
             throw new RuntimeException("videoDataRotate failed!");
         }
@@ -106,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             desBitmap = MyYuvUtils.nv21ToBitmap(this, nv21Array, width, width);
         }
-        return desBitmap;
+        viewDataBinding.mainNv21RotateFlip.setImageBitmap(desBitmap);
     }
 
     private void initJni() {

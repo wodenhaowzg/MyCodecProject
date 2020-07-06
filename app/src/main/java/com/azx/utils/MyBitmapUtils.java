@@ -1,29 +1,23 @@
 package com.azx.utils;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
-import java.io.File;
 import java.nio.ByteBuffer;
 
 public class MyBitmapUtils {
 
     /**
-     * 将bitmap的每个颜色通道分离出来，成为一个新的bitmap
+     * 将格式为 ARGB_8888 的 bitmap 对象中每个颜色通道分离出来，产生单通道的bitmap。
      *
-     * @param path sd卡的相对路径
-     * @return 返回原始bitmap以及r，g，b 三个颜色通道的bitmap，一共四个
+     * @param bitmap bitmap 对象。
+     * @return 返回原始的 bitmap 对象以及r，g，b 三个单颜色通道的 bitmap，一共四个。
      */
-    public static Bitmap[] spliteBitmapColor(String path) {
-        Bitmap[] rgbArray = new Bitmap[4];
-        File file = MyFileUtils.getExternalStorageFile(path);
-        if (file == null) {
-            throw new RuntimeException("File not found! " + path);
+    public static Bitmap[] spliteArgbBitmapColor(Bitmap bitmap) {
+        if (bitmap == null) {
+            return null;
         }
-
-        // 默认解析出的bitmap格式为ARGB_8888
-        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+        Bitmap[] rgbArray = new Bitmap[4];
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         // 获取bitmap总的字节数

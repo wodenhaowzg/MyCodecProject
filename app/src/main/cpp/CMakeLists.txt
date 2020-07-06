@@ -17,7 +17,7 @@ set(LOCAL_LIBYUV_ROOT_PATH ${ROOT_PATH}/Lib/libyuv)
 # 设置普通变量
 # 设置ndk路径
 set(CMAKE_ANDROID_NDK /Users/wangzhiguo/Downloads/Learns/Developer-Tools/ndk-versions/android-ndk-r14b)
-# 设置输出目录
+# 设置输出目录，这个输出的so是带符号表的，不带的还不知道怎么设置
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY /Users/wangzhiguo/Downloads/Learns/MyGithubs/Android/MyCodecProject/app/libs/armeabi-v7a)
 
 # 为 c++ 编译器设置编译选项，只能设置一次，不能重复设置，后者会覆盖前者
@@ -54,12 +54,12 @@ set_target_properties(
         IMPORTED_LOCATION
         ${LOCAL_FFMPEG_ROOT_PATH}/lib/libavcodec/armeabi-v7a/libavcodec.a)
 
-add_library(ffmpeg-swresample STATIC IMPORTED)
-set_target_properties(
-        ffmpeg-swresample
-        PROPERTIES
-        IMPORTED_LOCATION
-        ${LOCAL_FFMPEG_ROOT_PATH}/lib/libswresample/armeabi-v7a/libswresample.a)
+#add_library(ffmpeg-swresample STATIC IMPORTED)
+#set_target_properties(
+#        ffmpeg-swresample
+#        PROPERTIES
+#        IMPORTED_LOCATION
+#        ${LOCAL_FFMPEG_ROOT_PATH}/lib/libswresample/armeabi-v7a/libswresample.a)
 
 add_library(ffmpeg-avutil STATIC IMPORTED)
 set_target_properties(
@@ -109,7 +109,7 @@ target_link_libraries( # Specifies the target library.
         ${GLESv2-lib}
         ${android-lib}
         ffmpeg-avcodec
-        ffmpeg-swresample
+#        ffmpeg-swresample
         ffmpeg-avutil
         ffmpeg-avformat
         ffmpeg-swscale

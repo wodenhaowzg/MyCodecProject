@@ -49,12 +49,12 @@ public class MyYuvUtils {
     }
 
     /**
-     * 将给定的nv21数据，把y, uv 颜色通道分离出来。
+     * 将给定的nv21数据，把y, uv 两个平面分离出来。
      *
      * @param nv21Array 给定的 nv21 数据
      * @param width     图像的宽度
      * @param height    图像的高度
-     * @return 返回y, uv 三个颜色通道的单独的数据。
+     * @return 返回y, uv 两个平面的单独数据。
      */
     public static byte[][] spliteNV21Array(byte[] nv21Array, int width, int height) {
         byte[][] result = new byte[3][];
@@ -69,18 +69,19 @@ public class MyYuvUtils {
     }
 
     /**
-     * 将单通道的nv21数据，组成一个完整的nv21数据。
+     * 将单平面的nv21数据，组成一个完整的nv21数据。
      *
-     * @param srcArray 单通道数据，y、u、v 三种
+     * @param yPlanar  给的数据是 y 平面的数据还是 uv 平面的数据
+     * @param srcArray 单平面数据，有y、uv 两种
      * @param width    图像的宽度
      * @param height   图像的高度
-     * @return 完整的三通道yuv数据
+     * @return 完整平面的yuv数据
      */
-    public static byte[] mergeNV21Array(int yuvType, byte[] srcArray, int width, int height) {
+    public static byte[] mergeNV21Array(boolean yPlanar, byte[] srcArray, int width, int height) {
         byte[] yuvArray = new byte[width * height * 3 / 2];
         Arrays.fill(yuvArray, (byte) -128);
         int yOffset = width * height;
-        if (yuvType == 0) { // y
+        if (yPlanar) { // y
             System.arraycopy(srcArray, 0, yuvArray, 0, srcArray.length);
         } else { // u
             System.arraycopy(srcArray, 0, yuvArray, yOffset, srcArray.length);
