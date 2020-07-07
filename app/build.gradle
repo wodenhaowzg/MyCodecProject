@@ -52,6 +52,8 @@ android {
         tasks.getByName("assembleDebug").doLast {
             // 拷贝so
 //            def file = File("/build/intermediates/stripped_native_libs/debug/out/lib/armeabi-v7a/libcodec_ttt.so")
+
+
         }
     }
 }

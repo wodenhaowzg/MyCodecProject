@@ -11,13 +11,13 @@ public class MyBitmapUtils {
      * 将格式为 ARGB_8888 的 bitmap 对象中每个颜色通道分离出来，产生单通道的bitmap。
      *
      * @param bitmap bitmap 对象。
-     * @return 返回原始的 bitmap 对象以及r，g，b 三个单颜色通道的 bitmap，一共四个。
+     * @return 返回原始的 bitmap 对象以及r，g，b 三个单颜色通道的 bitmap，一共3个。
      */
     public static Bitmap[] spliteArgbBitmapColor(Bitmap bitmap) {
         if (bitmap == null) {
             return null;
         }
-        Bitmap[] rgbArray = new Bitmap[4];
+        Bitmap[] rgbArray = new Bitmap[3];
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         // 获取bitmap总的字节数
@@ -82,10 +82,9 @@ public class MyBitmapUtils {
         gBitmap.setPixels(gPixels, 0, width, 0, 0, width, height);
         Bitmap bBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         bBitmap.setPixels(bPixels, 0, width, 0, 0, width, height);
-        rgbArray[0] = bitmap;
-        rgbArray[1] = rBitmap;
-        rgbArray[2] = gBitmap;
-        rgbArray[3] = bBitmap;
+        rgbArray[0] = rBitmap;
+        rgbArray[1] = gBitmap;
+        rgbArray[2] = bBitmap;
         return rgbArray;
     }
 }

@@ -12,6 +12,7 @@ public class NativeVideoEncodeHelper {
     private static final int FORMAT_NV12 = 2;
 
     public static final int TTT_FORMAT_NV21 = 1;
+    public static final int TTT_FORMAT_NV12 = 2;
     public static final int TTT_FORMAT_RGBA = 3;
     public static final int TTT_FORMAT_ABGR = 4;
     public static final int TTT_FORMAT_I420 = 5;
@@ -112,13 +113,13 @@ public class NativeVideoEncodeHelper {
 
     public native boolean videoDataRotateOperator(long lencoder, int format, byte[] data, int width, int height, int pixelWidth, int rotate, boolean flip);
 
-    private native byte[] CommonToNV12(long lencoder, byte[] yuvFrame, boolean flip, int format);
+    public native byte[] CommonToNV12(long lencoder, byte[] yuvFrame, boolean flip, int format);
 
     private native byte[] CommonToI420(long lencoder, byte[] yuvFrame, boolean flip, int format);
 
-    private native byte[] RGBAToARGB(long lencoder, byte[] data, int width, int height, int pixelWidth);
+    private native boolean RGBAToARGB(long lencoder, byte[] data, int width, int height, int pixelWidth);
 
-    private native byte[] ARGBToNV21(long lencoder, byte[] data, int width, int height, int pixelWidth);
+    private native boolean ARGBToNV21(long lencoder, byte[] data, int width, int height, int pixelWidth);
 
     public boolean yuvVideoDataRotate(int format, byte[] array, int width, int height, int rotate, boolean flip) {
         return videoDataRotateOperator(mlencoder, format, array, width, height, 0, rotate, flip);
@@ -128,11 +129,11 @@ public class NativeVideoEncodeHelper {
         return videoDataRotateOperator(mlencoder, format, array, width, height, pixelWidth, rotate, flip);
     }
 
-    public byte[] RGBAToARGB(byte[] srcArray, int width, int height, int pixelWidth) {
+    public boolean RGBAToARGB(byte[] srcArray, int width, int height, int pixelWidth) {
         return RGBAToARGB(mlencoder, srcArray, width, height, pixelWidth);
     }
 
-    public byte[] ARGBToNV21(byte[] srcArray, int width, int height, int pixelWidth) {
+    public boolean ARGBToNV21(byte[] srcArray, int width, int height, int pixelWidth) {
         return ARGBToNV21(mlencoder, srcArray, width, height, pixelWidth);
     }
 
