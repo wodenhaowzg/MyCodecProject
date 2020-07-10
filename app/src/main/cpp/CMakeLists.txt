@@ -34,6 +34,7 @@ include_directories("${LOCAL_SRC_ROOT_PATH}/../AndroidJni")
 include_directories("${LOCAL_LIBYUV_ROOT_PATH}/include")
 include_directories("${LOCAL_FFMPEG_ROOT_PATH}/include/armeabi-v7a")
 include_directories("${LOCAL_X264_ROOT_PATH}/include/armeabi-v7a")
+include_directories("${LOCAL_SRC_ROOT_PATH}")
 
 #查找当前目录所有源文件 并将名称保存到 DIR_SRCS 变量，不能查找子目录
 aux_source_directory(${LOCAL_SRC_ROOT_PATH}/VideoEncoder VIDEO_CODEC_SRC)
@@ -44,6 +45,7 @@ add_library( # Sets the name of the library.
         SHARED
         ${VIDEO_CODEC_SRC}
         ${LOCAL_SRC_ROOT_PATH}/../AndroidJni/jni_helpers.cc
+        ${LOCAL_SRC_ROOT_PATH}/Common.cpp
         ${LOCAL_SRC_ROOT_PATH}/OnLoad.cpp)
 
 # 添加 ffmpeg 库
@@ -108,6 +110,7 @@ target_link_libraries( # Specifies the target library.
         ${log-lib}
         ${GLESv2-lib}
         ${android-lib}
+        mediandk
         ffmpeg-avcodec
 #        ffmpeg-swresample
         ffmpeg-avutil
