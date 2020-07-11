@@ -8,17 +8,20 @@ cmake_minimum_required(VERSION 3.4.1)
 project("VideoCodec")
 
 # 定义根路径
-set(ROOT_PATH /Users/wangzhiguo/Downloads/Learns/Guo_Company_Svn/GitLab/3TClient)
+# set(ROOT_PATH /Users/wangzhiguo/Downloads/Learns/Guo_Company_Svn/GitLab/3TClient)
+set(ROOT_PATH /Users/zanewang/Downloads/WorkSpace/Company/SanTiYun/GitLab)
 set(LOCAL_SRC_ROOT_PATH ${ROOT_PATH}/SDK/Client/ClientController/H264EncoderDecoder)
 set(LOCAL_FFMPEG_ROOT_PATH ${ROOT_PATH}/SDK/Client/android/ffmpeg_for_enc)
 set(LOCAL_X264_ROOT_PATH ${ROOT_PATH}/SDK/Client/android/x264)
-set(LOCAL_LIBYUV_ROOT_PATH ${ROOT_PATH}/Lib/libyuv)
+#set(LOCAL_LIBYUV_ROOT_PATH ${ROOT_PATH}/Lib/libyuv)
 
 # 设置普通变量
 # 设置ndk路径
-set(CMAKE_ANDROID_NDK /Users/wangzhiguo/Downloads/Learns/Developer-Tools/ndk-versions/android-ndk-r14b)
+# set(CMAKE_ANDROID_NDK /Users/wangzhiguo/Downloads/Learns/Developer-Tools/ndk-versions/android-ndk-r14b)
+set(CMAKE_ANDROID_NDK /Users/zanewang/Downloads/WorkSpace/SDK/Android-NDK/android-ndk-r14b)
 # 设置输出目录，这个输出的so是带符号表的，不带的还不知道怎么设置
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY /Users/wangzhiguo/Downloads/Learns/MyGithubs/Android/MyCodecProject/app/libs/armeabi-v7a)
+# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY /Users/wangzhiguo/Downloads/Learns/MyGithubs/Android/MyCodecProject/app/libs/armeabi-v7a)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY /Users/zanewang/Downloads/WorkSpace/MyGithubs/Android/MyCodecProject/app/libs/armeabi-v7a)
 
 # 为 c++ 编译器设置编译选项，只能设置一次，不能重复设置，后者会覆盖前者
 set(CMAKE_C_FLAGS -D__STDC_CONSTANT_MACROS)
@@ -93,12 +96,12 @@ set_target_properties(
         ${LOCAL_X264_ROOT_PATH}/lib/armeabi-v7a/libx264.a)
 
 # 添加 yuv 库
-add_library(yuv-lib SHARED IMPORTED)
-set_target_properties(
-        yuv-lib
-        PROPERTIES
-        IMPORTED_LOCATION
-        ${LOCAL_LIBYUV_ROOT_PATH}/libs/armeabi-v7a/libyuv_ttt.so)
+#add_library(yuv-lib SHARED IMPORTED)
+#set_target_properties(
+#        yuv-lib
+#        PROPERTIES
+#        IMPORTED_LOCATION
+#        ${LOCAL_LIBYUV_ROOT_PATH}/libs/armeabi-v7a/libyuv_ttt.so)
 
 
 find_library(log-lib log)
@@ -117,4 +120,5 @@ target_link_libraries( # Specifies the target library.
         ffmpeg-avformat
         ffmpeg-swscale
         x264-lib
-        yuv-lib)
+#        yuv-lib
+        )

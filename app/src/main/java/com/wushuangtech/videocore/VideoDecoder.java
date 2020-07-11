@@ -40,11 +40,11 @@ public class VideoDecoder {
 
     private native void Uninitialize(long pdecoder);
 
-    private native boolean openSoftDecoder(long ldecoder, int nWidth, int nHeight);
+    private native int OpenDecoder(long ldecoder, Surface surface, int nWidth, int nHeight);
+
+    private native void CloseDecoder(long ldecoder);
 
     private native void decodeYuvFrame(long ldecoder, byte[] yuvFrame, int pts);
-
-    private native void closeSoftDecoder(long ldecoder);
 
     private native boolean setSurface(long ldecoder, Surface surface);
 
