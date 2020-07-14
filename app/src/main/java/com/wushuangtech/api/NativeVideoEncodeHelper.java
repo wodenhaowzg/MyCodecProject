@@ -137,6 +137,11 @@ public class NativeVideoEncodeHelper {
         return ARGBToNV21(mlencoder, srcArray, width, height, pixelWidth);
     }
 
+    public byte[] ARGBToNV12(byte[] srcArray, int width, int height, int pixelWidth) {
+        setEncoderResolution(mlencoder, width, height, 0, 0, width, height, width, height, 0);
+        return CommonToNV12(mlencoder, srcArray, false, TTT_FORMAT_ARGB);
+    }
+
     //软件编码完成后回调函数
     private void OnYuvFrameEncoded(byte[] encdata, int length, int frameType, int ptsMs) {  // FIXME  时间戳需要改成long
 //        long current = (System.nanoTime() / 1000000);

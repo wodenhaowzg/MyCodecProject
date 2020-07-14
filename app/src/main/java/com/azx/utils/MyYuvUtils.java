@@ -49,22 +49,21 @@ public class MyYuvUtils {
     }
 
     /**
-     * 将给定的nv21数据，把y, uv 两个平面分离出来。
+     * 将给定的YUV420SP数据，把y, uv 两个平面分离出来。
      *
-     * @param nv21Array 给定的 nv21 数据
-     * @param width     图像的宽度
-     * @param height    图像的高度
+     * @param yuvArray 给定的 YUV420SP 数据，包含具体的 NV12，NV21 两种格式，NV12 是 UV , NV21 是 VU
+     * @param width    图像的宽度
+     * @param height   图像的高度
      * @return 返回y, uv 两个平面的单独数据。
      */
-    public static byte[][] spliteNV21Array(byte[] nv21Array, int width, int height) {
+    public static byte[][] spliteY420SPArray(byte[] yuvArray, int width, int height) {
         byte[][] result = new byte[3][];
-        // nv21 是 YUV420SP ，v在u之前
         byte[] yArray = new byte[width * height]; // 每个像素点都有 y 值。
-        byte[] vuArray = new byte[width * height / 2]; // 每四个像素点共用一个 uv 值
-        System.arraycopy(nv21Array, 0, yArray, 0, yArray.length);
-        System.arraycopy(nv21Array, yArray.length, vuArray, 0, vuArray.length);
+        byte[] uvArray = new byte[width * height / 2]; // 每四个像素点共用一个 uv 值
+        System.arraycopy(yuvArray, 0, yArray, 0, yArray.length);
+        System.arraycopy(yuvArray, yArray.length, uvArray, 0, uvArray.length);
         result[0] = yArray;
-        result[1] = vuArray;
+        result[1] = uvArray;
         return result;
     }
 
@@ -77,7 +76,7 @@ public class MyYuvUtils {
      * @param height   图像的高度
      * @return 完整平面的yuv数据
      */
-    public static byte[] mergeNV21Array(boolean yPlanar, byte[] srcArray, int width, int height) {
+    public static byte[] mergeY420SPArray(boolean yPlanar, byte[] srcArray, int width, int height) {
         byte[] yuvArray = new byte[width * height * 3 / 2];
         Arrays.fill(yuvArray, (byte) -128);
         int yOffset = width * height;

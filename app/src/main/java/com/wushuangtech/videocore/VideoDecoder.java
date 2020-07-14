@@ -50,6 +50,8 @@ public class VideoDecoder {
 
     private native boolean useDecodedData(long ldecoder, boolean use);
 
+    public native boolean renderYuvDecodedFrame(long ldecoder, byte[] yuvFrame, int format, int width, int height, Surface surface);
+
     //软件解码完成为ARGB
     private void OnFrameDecoded(byte[] decdata, int width, int height) {
     }
