@@ -2,8 +2,6 @@ package com.wushuangtech.api;
 
 import android.media.MediaCodecInfo;
 
-import com.azx.utils.MyLog;
-
 public class NativeVideoEncodeHelper {
 
     private String TAG;
