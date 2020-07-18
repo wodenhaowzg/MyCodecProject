@@ -102,22 +102,33 @@ public class MainActivity extends AppCompatActivity {
 //        if (!result) {
 //            throw new RuntimeException("ARGBToNV21 failed!");
 //        }
+
         argb = mNativeVideoEncodeHelper.ARGBToNV12(argb, width, height, 4);
         if (argb == null) {
             throw new RuntimeException("ARGBToNV12 failed!");
         }
 
 
-        // 将 nv21 数据分离为两个平面的数据，y平面和uv平面。
-        byte[][] yuvSpliteArray = MyYuvUtils.spliteY420SPArray(argb, width, height);
-        // 将 y 平面数据合并为一个完整的 nv21 数据展示出来
-        byte[] yuvArray = MyYuvUtils.mergeNV21Array(true, yuvSpliteArray[0], width, height);
-        Bitmap yBitmap = MyYuvUtils.nv21ToBitmap(this, yuvArray, width, height);
-        // 将 uv 平面数据合并为一个完整的 nv21 数据展示出来
-        byte[] yuvArray2 = MyYuvUtils.mergeNV21Array(false, yuvSpliteArray[1], width, height);
-        Bitmap uvBitmap = MyYuvUtils.nv21ToBitmap(this, yuvArray2, width, height);
-        viewDataBinding.mainNv21YImage.setImageBitmap(yBitmap);
-        viewDataBinding.mainNv21VuImage.setImageBitmap(uvBitmap);
+//        // 将 nv21 数据分离为两个平面的数据，y平面和uv平面。
+//        byte[][] yuvSpliteArray = MyYuvUtils.spliteY420SPArray(argb, width, height);
+//        // 将 y 平面数据合并为一个完整的 nv21 数据展示出来
+//        byte[] yuvArray = MyYuvUtils.mergeY420SPArray(true, yuvSpliteArray[0], width, height);
+//        Bitmap yBitmap = MyYuvUtils.nv21ToBitmap(this, yuvArray, width, height);
+//        // 将 uv 平面数据合并为一个完整的 nv21 数据展示出来
+//        byte[] yuvArray2 = MyYuvUtils.mergeY420SPArray(false, yuvSpliteArray[1], width, height);
+//        Bitmap uvBitmap = MyYuvUtils.nv21ToBitmap(this, yuvArray2, width, height);
+//        viewDataBinding.mainNv21YImage.setImageBitmap(yBitmap);
+//        viewDataBinding.mainNv21VuImage.setImageBitmap(uvBitmap);
+
+//        byte[][] yuvSpliteArray = MyYuvUtils.spliteNV12ToSinglePlane(argb, width, height);
+//        // 将 y 平面数据合并为一个完整的 nv21 数据展示出来
+//        byte[] yuvArray = MyYuvUtils.mergeNV12Array(MyYuvUtils.YUV_PLANE_Y, yuvSpliteArray[0], width, height);
+//        Bitmap yBitmap = MyYuvUtils.nv21ToBitmap(this, yuvArray, width, height);
+//        // 将 uv 平面数据合并为一个完整的 nv21 数据展示出来
+//        byte[] yuvArray2 = MyYuvUtils.mergeNV12Array(MyYuvUtils.YUV_PLANE_U, yuvSpliteArray[2], width, height);
+//        Bitmap uvBitmap = MyYuvUtils.nv21ToBitmap(this, yuvArray2, width, height);
+//        viewDataBinding.mainNv21YImage.setImageBitmap(yBitmap);
+//        viewDataBinding.mainNv21VuImage.setImageBitmap(uvBitmap);
     }
 
     /**

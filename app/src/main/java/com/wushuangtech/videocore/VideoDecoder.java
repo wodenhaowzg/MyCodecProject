@@ -44,13 +44,13 @@ public class VideoDecoder {
 
     private native void CloseDecoder(long ldecoder);
 
-    private native void decodeYuvFrame(long ldecoder, byte[] yuvFrame, long pts);
+    private native void decodeYuvFrame(long ldecoder, byte[] yuvFrame, long pts, int fps);
 
     private native boolean setSurface(long ldecoder, Surface surface);
 
     private native boolean useDecodedData(long ldecoder, boolean use);
 
-    public native boolean renderYuvDecodedFrame(long ldecoder, byte[] yuvFrame, int format, int width, int height, Surface surface);
+    public native boolean RenderYuvDecodedFrame(byte[] yuvFrameint, int width, int height, Surface surface);
 
     //软件解码完成为ARGB
     private void OnFrameDecoded(byte[] decdata, int width, int height) {
@@ -66,5 +66,9 @@ public class VideoDecoder {
     }
 
     private void OnFrameSizeChanged(int width, int height) {
+    }
+
+    private void OnSoftDecoderClosed() {
+
     }
 }

@@ -12,6 +12,10 @@ import java.util.Arrays;
 
 public class MyYuvUtils {
 
+    public static final int YUV_PLANE_Y = 1;
+    public static final int YUV_PLANE_U = 2;
+    public static final int YUV_PLANE_V = 3;
+
     private static Allocation in, out;
     private static RenderScript renderScript;
     private static ScriptIntrinsicYuvToRGB yuvToRgbIntrinsic;
@@ -67,6 +71,30 @@ public class MyYuvUtils {
         return result;
     }
 
+    public static byte[][] spliteNV12ToSinglePlane(byte[] yuvArray, int width, int height) {
+        byte[][] result = new byte[3][];
+        byte[] yArray = new byte[width * height]; // 每个像素点都有 y 值。
+        byte[] uvArray = new byte[width * height / 2]; // 每四个像素点共用一个 uv 值
+        System.arraycopy(yuvArray, 0, yArray, 0, yArray.length);
+        System.arraycopy(yuvArray, yArray.length, uvArray, 0, uvArray.length);
+        byte[] uArray = new byte[width * height / 4];
+        byte[] vArray = new byte[width * height / 4];
+        int uCopyIndex = 0, vCopyIndex = 0;
+        for (int i = 0; i < uvArray.length; i++) {
+            if (i % 2 == 0) {
+                uArray[uCopyIndex] = uvArray[i];
+                uCopyIndex++;
+            } else {
+                vArray[vCopyIndex] = uvArray[i];
+                vCopyIndex++;
+            }
+        }
+        result[0] = yArray;
+        result[1] = uArray;
+        result[2] = vArray;
+        return result;
+    }
+
     /**
      * 将单平面的nv21数据，组成一个完整的nv21数据。
      *
@@ -82,8 +110,23 @@ public class MyYuvUtils {
         int yOffset = width * height;
         if (yPlanar) { // y
             System.arraycopy(srcArray, 0, yuvArray, 0, srcArray.length);
-        } else { // u
+        } else { // uv
             System.arraycopy(srcArray, 0, yuvArray, yOffset, srcArray.length);
+        }
+        return yuvArray;
+    }
+
+    public static byte[] mergeNV12Array(int planeType, byte[] srcArray, int width, int height) {
+        byte[] yuvArray = new byte[width * height * 3 / 2];
+        Arrays.fill(yuvArray, (byte) -128);
+        int yOffset = width * height;
+        int uOffset = yOffset + yOffset / 4;
+        if (planeType == YUV_PLANE_Y) { // y
+            System.arraycopy(srcArray, 0, yuvArray, 0, srcArray.length);
+        } else if (planeType == YUV_PLANE_U) { // uv
+            System.arraycopy(srcArray, 0, yuvArray, yOffset, srcArray.length);
+        } else {
+            System.arraycopy(srcArray, 0, yuvArray, uOffset, srcArray.length);
         }
         return yuvArray;
     }
